@@ -18,9 +18,9 @@
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 html,body{height:100%;margin:0}
 body{background:var(--wall2);color:var(--ink);font-family:Georgia,"Times New Roman",serif;display:flex;flex-direction:column;align-items:center;overflow:hidden;-webkit-tap-highlight-color:transparent}
-h1{font-weight:normal;font-size:1.25rem;margin:14px 0 2px;letter-spacing:.02em}
+h1{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);left:0;right:0;text-align:center;font-weight:normal;font-size:1.25rem;margin:0;line-height:28px;letter-spacing:.02em}
 .sub{color:var(--dim);font-size:.85rem;margin:0 16px 8px;text-align:center}
-.room{position:relative;width:min(100%,520px);flex:1;min-height:0;background:linear-gradient(var(--wall) 0 68%,var(--floor) 68% 100%);overflow:hidden}
+.room{position:fixed;top:calc(env(safe-area-inset-top,0px) + 42px);bottom:calc(env(safe-area-inset-bottom,0px) + 148px);left:0;right:0;margin:0 auto;width:min(100%,520px);background:linear-gradient(var(--wall) 0 68%,var(--floor) 68% 100%);overflow:hidden}
 .room::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 78% 22%,transparent 0 12%,rgba(0,0,0,.45) 70%);pointer-events:none}
 .window{position:absolute;left:8%;top:9%;width:26%;aspect-ratio:3/4;background:#171a2a;border:5px solid var(--door);border-radius:3px}
 .window::before,.window::after{content:"";position:absolute;background:var(--door)}
@@ -40,8 +40,11 @@ svg{width:100%;height:auto;display:block;cursor:pointer;overflow:visible;transfo
 .sofa .legs i{width:8px;background:#2a1d22}
 #tears{animation:drip 1.3s ease-in infinite}
 @keyframes drip{from{transform:translateY(0)}to{transform:translateY(5px)}}
-.choices{width:min(100%,520px);display:flex;flex-direction:column;gap:8px;padding:10px 12px;box-sizing:border-box;background:var(--wall2)}
-.choices button{border:1px solid #5a5666;background:#312f3a;color:var(--ink);font:inherit;font-size:.95rem;padding:12px;border-radius:10px;text-align:left;cursor:pointer}
+.choices{position:fixed;bottom:0;left:0;right:0;margin:0 auto;width:min(100%,520px);display:flex;flex-direction:column;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));box-sizing:border-box;background:var(--wall2)}
+.choices button{border:1px solid #5a5666;background:#312f3a;color:var(--ink);font:inherit;font-size:.9rem;padding:11px 12px;border-radius:10px;text-align:left;cursor:pointer}
+.choices button:active{background:#403d4b}
+#george{transform-origin:100px 130px;animation:breathe 4s ease-in-out infinite}
+#george.pet{animation:wiggle .5s ease-in-out}
 #eyes{transform-box:fill-box;transform-origin:center;transition:transform .2s}
 #front{transform-box:fill-box;transform-origin:center;animation:turn .3s ease-out}
 @keyframes turn{from{transform:scaleX(.3)}to{transform:scaleX(1)}}
@@ -113,6 +116,7 @@ svg{width:100%;height:auto;display:block;cursor:pointer;overflow:visible;transfo
       </g>
     </svg>
   </div>
+</div>
 <div class="choices">
   <button id="c1">You’re loved. I love you just the way you are.</button>
   <button id="c2">You’re a burden… and scary.</button>
@@ -183,6 +187,4 @@ svg{width:100%;height:auto;display:block;cursor:pointer;overflow:visible;transfo
 })();
 </script>
 </body>
-  </html>
-
-          
+</html>
