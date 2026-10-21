@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gregor Samsa</title>
+<style>
+:root{
+  --wall:#2b2a33; --wall2:#23222a; --floor:#3a2f2a; --floor2:#2f2622;
+  --ink:#e9e4d8; --dim:#9a958a; --bug:#6f4d31; --bug2:#8a6240; --bug3:#4d3322;
+  --accent:#e8b4a0; --door:#4a3a2e; --glow:#f3d9a4;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--wall:#2b2a33}}
+:root[data-theme="dark"]{--wall:#2b2a33}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{height:100%;margin:0}
+body{background:var(--wall2);color:var(--ink);font-family:Georgia,"Times New Roman",serif;display:flex;flex-direction:column;align-items:center;overflow:hidden;-webkit-tap-highlight-color:transparent}
+h1{font-weight:normal;font-size:1.25rem;margin:14px 0 2px;letter-spacing:.02em}
+.sub{color:var(--dim);font-size:.85rem;margin:0 16px 8px;text-align:center}
+.room{position:relative;width:min(100%,520px);flex:1;min-height:0;background:linear-gradient(var(--wall) 0 68%,var(--floor) 68% 100%);overflow:hidden}
+.room::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 78% 22%,transparent 0 12%,rgba(0,0,0,.45) 70%);pointer-events:none}
+.window{position:absolute;left:8%;top:9%;width:26%;aspect-ratio:3/4;background:#171a2a;border:5px solid var(--door);border-radius:3px}
+.window::before,.window::after{content:"";position:absolute;background:var(--door)}
+.window::before{left:50%;top:0;bottom:0;width:4px;transform:translateX(-50%)}
+.window::after{top:50%;left:0;right:0;height:4px;transform:translateY(-50%)}
+.door{position:absolute;right:7%;top:13%;width:24%;height:55%;background:var(--door);border:4px solid #3a2d23;border-bottom:0;border-radius:3px 3px 0 0}
+.door::before{content:"🔒";position:absolute;left:12%;top:48%;font-size:1.2rem}
+.bed{position:absolute;left:4%;bottom:26%;width:34%;height:12%;background:#41384a;border-radius:4px}
+.svgwrap{position:absolute;left:50%;bottom:6%;width:78%;max-width:400px;transform:translateX(-50%);touch-action:manipulation}
+svg{width:100%;height:auto;display:block;cursor:pointer;overflow:visible;transform-origin:right bottom;transition:transform 1.1s ease-in-out}
+.svgwrap{z-index:2}
+.svgwrap.under{z-index:0}
+.under svg{transform:translateY(var(--hy,-120px)) scale(.16)}
+.sofa{position:absolute;right:5%;bottom:27%;width:44%;z-index:1;pointer-events:none}
+.sofa-top{height:72px;background:#5b3f4c;border-radius:14px 14px 6px 6px;box-shadow:inset 0 -18px 0 #6c4a5a,inset 0 0 0 3px #3e2a34}
+.sofa .legs{height:28px;display:flex;justify-content:space-between;padding:0 8%}
+.sofa .legs i{width:8px;background:#2a1d22}
+#tears{animation:drip 1.3s ease-in infinite}
+@keyframes drip{from{transform:translateY(0)}to{transform:translateY(5px)}}
+.choices{width:min(100%,520px);display:flex;flex-direction:column;gap:8px;padding:10px 12px;box-sizing:border-box;background:var(--wall2)}
+.choices button{border:1px solid #5a5666;background:#312f3a;color:var(--ink);font:inherit;font-size:.95rem;padding:12px;border-radius:10px;text-align:left;cursor:pointer}
+#eyes{transform-box:fill-box;transform-origin:center;transition:transform .2s}
+#front{transform-box:fill-box;transform-origin:center;animation:turn .3s ease-out}
+@keyframes turn{from{transform:scaleX(.3)}to{transform:scaleX(1)}}
+@keyframes breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.025)}}
+@keyframes wiggle{0%{transform:rotate(0)}20%{transform:rotate(-4deg) translateY(-3px)}50%{transform:rotate(3deg) translateY(-2px)}80%{transform:rotate(-2deg)}100%{transform:rotate(0)}}
+#bubble{position:absolute;left:50%;bottom:58%;transform:translateX(-50%);background:var(--ink);color:#1d1b22;padding:6px 12px;border-radius:14px;font-size:.95rem;white-space:nowrap;opacity:1;transition:opacity .4s;pointer-events:none}
+#bubble.hide{opacity:0}
+.heart{position:absolute;font-size:1.3rem;pointer-events:none;animation:up 1.2s ease-out forwards}
+@keyframes up{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-70px)}}
+.count{position:absolute;left:12px;top:10px;font-size:.8rem;color:var(--dim);z-index:2}
+@media (prefers-reduced-motion:reduce){#george,#george.pet{animation:none}.heart{animation-duration:.01s}}
+</style>
+</head>
+<body>
+<h1>Gregor Samsa</h1>
+
+<div class="room" id="room">
+  <div class="count" id="count">Pets: 0</div>
+  <div class="window"></div>
+  <div class="door"></div>
+  <div class="bed"></div>
+  <div class="sofa"><div class="sofa-top"></div><div class="legs"><i></i><i></i></div></div>
+  <div class="svgwrap" id="wrap">
+    <div id="bubble">…</div>
+    <svg viewBox="0 0 200 150" id="bug" role="button" aria-label="Pet Gregor">
+      <ellipse cx="100" cy="142" rx="70" ry="5" fill="rgba(0,0,0,.35)"/>
+      <g id="george">
+        <g stroke="#0e0b09" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".65">
+          <path d="M92 118 L100 130 L108 141"/><path d="M62 112 L52 124 L58 140"/><path d="M142 118 L158 126 L168 140"/>
+        </g>
+        <g stroke="#15100c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none">
+          <path d="M56 114 L42 122 L28 140"/><path d="M84 122 L76 132 L70 141"/><path d="M124 122 L140 130 L148 141"/>
+        </g>
+        <path d="M170 112 Q186 118 184 127 Q176 132 164 126Z" fill="#241b14" stroke="#8a7a66" stroke-width="1.5"/>
+        <path d="M174 116 L172 129 M180 118 L178 130 M184 127 L193 132" stroke="#8a7a66" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M66 94 Q112 62 176 114 Q152 132 104 128 Q70 126 66 94Z" fill="#1a1410" stroke="#8a7a66" stroke-width="1.5"/>
+        <g stroke="#8a7a66" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".8">
+          <path d="M72 96 Q112 70 164 108"/><path d="M78 106 Q116 84 160 114"/><path d="M92 118 Q120 104 150 120"/><path d="M70 100 Q118 100 172 114"/>
+        </g>
+        <ellipse cx="58" cy="100" rx="21" ry="17" fill="#221a14" stroke="#8a7a66" stroke-width="1.5"/>
+        <path d="M44 98 Q58 86 72 98 M46 106 Q58 96 70 106" stroke="#8a7a66" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <path d="M30 98 Q24 68 8 62 Q-2 60 -8 74 M38 96 Q46 64 26 52 Q14 46 6 56" stroke="#a89a85" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <ellipse cx="32" cy="110" rx="16" ry="14" fill="#1a1410" stroke="#8a7a66" stroke-width="1.5" transform="rotate(20 32 110)"/>
+        <g id="side">
+        <ellipse cx="27" cy="108" rx="5" ry="6" fill="#0a0806" stroke="#c9bfae" stroke-width="1.2"/>
+        <circle cx="25.5" cy="106" r="1.6" fill="#f3efe4"/>
+        <path d="M19 103 L32 98" stroke="#c9bfae" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M17 119 L23 124 M21 116 L14 121" stroke="#c9bfae" stroke-width="1.3" stroke-linecap="round"/>
+        </g>
+        <g id="front" style="display:none">
+          <ellipse cx="36" cy="109" rx="21" ry="19" fill="#1a1410" stroke="#8a7a66" stroke-width="1.5"/>
+          <g id="eyes">
+            <ellipse cx="28" cy="107" rx="5.5" ry="6.5" fill="#0a0806" stroke="#c9bfae" stroke-width="1.2"/>
+            <ellipse cx="44" cy="107" rx="5.5" ry="6.5" fill="#0a0806" stroke="#c9bfae" stroke-width="1.2"/>
+            <circle cx="26.5" cy="105" r="1.7" fill="#f3efe4"/><circle cx="42.5" cy="105" r="1.7" fill="#f3efe4"/>
+          </g>
+          <path id="bl" d="M21 101 L33 97" stroke="#c9bfae" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path id="br" d="M39 97 L51 101" stroke="#c9bfae" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path id="mo" d="M30 120 Q36 115 42 120" stroke="#c9bfae" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <g id="tears" style="display:none"><path d="M24 114 Q22 120 24 123 Q27 120 24 114Z" fill="#9fd0ff"/><path d="M48 114 Q46 120 48 123 Q51 120 48 114Z" fill="#9fd0ff"/></g>
+        </g>
+        <g fill="transparent">
+          <ellipse data-zone="body" cx="112" cy="106" rx="58" ry="26"/>
+          <rect data-zone="legs" x="20" y="126" width="156" height="18"/>
+          <rect data-zone="antennae" x="-8" y="44" width="48" height="50"/>
+          <ellipse data-zone="tail" cx="180" cy="120" rx="14" ry="12"/>
+          <ellipse data-zone="head" cx="34" cy="110" rx="21" ry="19"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+<div class="choices">
+  <button id="c1">You’re loved. I love you just the way you are.</button>
+  <button id="c2">You’re a burden… and scary.</button>
+</div>
+<script>
+(function(){
+  var lines={
+    head:["thank you…","…that’s nice.","…no one does this.","…thank you."],
+    body:["mm… that’s warm.","…my shell’s hard, sorry.","…it doesn’t hurt."],
+    legs:["hehe!","ah— ticklish!","*kicks legs*"],
+    antennae:["!? my feelers…","…careful.","…they’re sensitive."],
+    tail:["!?","…hey!","…oh. ok."]
+  };
+  var F={
+    head:{bl:"M21 98 Q27 95 33 98",br:"M39 98 Q45 95 51 98",mo:"M30 116 Q36 122 42 116",sq:.4},
+    body:{bl:"M21 99 L33 98",br:"M39 98 L51 99",mo:"M31 118 L41 118",sq:.35},
+    legs:{bl:"M21 98 Q27 95 33 98",br:"M39 98 Q45 95 51 98",mo:"M28 115 Q36 127 44 115",sq:.3},
+    antennae:{bl:"M21 93 L33 93",br:"M39 93 L51 93",mo:"M33 118 a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0",sq:1.25},
+    tail:{bl:"M21 93 L33 93",br:"M39 93 L51 93",mo:"M33 118 a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0",sq:1.25},
+    smile:{bl:"M21 97 Q27 94 33 97",br:"M39 97 Q45 94 51 97",mo:"M26 114 Q36 129 46 114",sq:.3},
+    teary:{bl:"M20 103 L33 95",br:"M39 95 L52 103",mo:"M30 122 Q36 114 42 122",sq:1.15,t:1}
+  };
+  var side=document.getElementById("side"), front=document.getElementById("front"),
+      bl=document.getElementById("bl"), br=document.getElementById("br"),
+      mo=document.getElementById("mo"), eyes=document.getElementById("eyes"), t3, under=false;
+  function face(z){
+    if(z==="sad"){side.style.display="";front.style.display="none";return;}
+    var f=F[z]||F.head;
+    bl.setAttribute("d",f.bl); br.setAttribute("d",f.br); mo.setAttribute("d",f.mo);
+    eyes.style.transform="scaleY("+f.sq+")";
+    document.getElementById("tears").style.display=f.t?"":"none";
+    side.style.display="none"; front.style.display="";
+  }
+  var n=0, bug=document.getElementById("bug"), g=document.getElementById("george"),
+      b=document.getElementById("bubble"), c=document.getElementById("count"),
+      wrap=document.getElementById("wrap"), t1, t2;
+  function pet(e){
+    if(under){say("…");return;}
+    n++; c.textContent="Pets: "+n;
+    g.classList.remove("pet"); void g.getBoundingClientRect(); g.classList.add("pet");
+    clearTimeout(t1); clearTimeout(t2);
+    var z=(e.target.getAttribute&&e.target.getAttribute("data-zone"))||"body";
+    var L=lines[z]; b.textContent=L[Math.floor(Math.random()*L.length)];
+    face(z);
+    b.classList.remove("hide");
+    t1=setTimeout(function(){g.classList.remove("pet")},520);
+    t2=setTimeout(function(){b.classList.add("hide")},2200);
+    clearTimeout(t3); t3=setTimeout(function(){face("sad")},3400);
+    var h=document.createElement("div"); h.className="heart"; h.textContent="♥";
+    h.style.color="var(--accent)";
+    h.style.left=(30+Math.random()*40)+"%"; h.style.top="30%";
+    wrap.appendChild(h); setTimeout(function(){h.remove()},1300);
+  }
+  bug.addEventListener("click",pet);
+  var roomEl=document.getElementById("room");
+  function say(s){b.textContent=s;b.classList.remove("hide");clearTimeout(t2);t2=setTimeout(function(){b.classList.add("hide")},2600);}
+  function heart(){var h=document.createElement("div");h.className="heart";h.textContent="♥";h.style.color="var(--accent)";h.style.left=(25+Math.random()*50)+"%";h.style.top="30%";wrap.appendChild(h);setTimeout(function(){h.remove()},1300);}
+  function setUnder(on){under=on;wrap.style.setProperty("--hy",-(roomEl.clientHeight*.21)+"px");wrap.classList.toggle("under",on);}
+  document.getElementById("c1").addEventListener("click",function(){
+    clearTimeout(t3); setUnder(false); face("smile"); say("…really? thank you.");
+    for(var i=0;i<5;i++)setTimeout(heart,i*180);
+    t3=setTimeout(function(){face("sad")},4500);
+  });
+  document.getElementById("c2").addEventListener("click",function(){
+    clearTimeout(t3); face("teary"); say("…I’m sorry.");
+    t3=setTimeout(function(){b.classList.add("hide");setUnder(true);},1600);
+  });
+})();
+</script>
+</body>
+  </html>
+  
